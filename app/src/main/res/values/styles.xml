@@ -1,0 +1,22 @@
+<resources>
+
+    <style name="ActivityTheme_Primary_Base_Light" parent="Theme.AppCompat.NoActionBar">
+        <item name="toolBarColor">@color/color_primary_blue</item>
+        <item name="backgroundColor">@android:color/background_light</item>
+        <item name="backgroundCardColor">@color/cardview_light_background</item>
+        <item name="primaryTextColor">#DE000000</item>
+        <item name="secondaryTextColor">#8A000000</item>
+        <item name="dividerColor">@color/colorAccent</item>
+        <item name="android:colorAccent">@color/color_accent_grey</item>
+    </style>
+
+    <style name="Activity_Base_Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="toolBarColor">#000000</item>
+        <item name="backgroundColor">#303030</item>
+        <item name="backgroundCardColor">#424242</item>
+        <item name="primaryTextColor">#FFFFFFFF</item>
+        <item name="secondaryTextColor">#B3FFFFFF</item>
+        <item name="dividerColor">#1FFFFFFF</item>
+        <item name="android:colorAccent">@color/color_accent_grey</item>
+    </style>
+</resources>

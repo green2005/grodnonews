@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Настройки">
+        <PreferenceScreen
+            android:title="Понравилось приложение?"
+            android:summary="Оставить отзыв"
+            android:key="@string/rate_key">
+        </PreferenceScreen>
+
+        <PreferenceScreen
+            android:title="Аутентификация"
+            android:summary="Введите имя пользователя и пароль"
+            android:key="@string/authenticate_key">
+        </PreferenceScreen>
+
+    </PreferenceCategory>
+</PreferenceScreen>

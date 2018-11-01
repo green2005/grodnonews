@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Grodno News</string>
+    <string name="lorem_ipsum">Lorem ipsum </string>
+    <string name="S13title">S13.ru</string>
+    <string name="HrodnaLifeTitle">Hrodna.Life</string>
+    <string name="NewGrodnoTitle">NewGrodno.by</string>
+
+    <string name="reply">Ответить</string>
+    <string name="userName">Имя пользователя</string>
+    <string name = "pwd">Пароль</string>
+    <string name = "auth_dialog_title">Параметры аутентификации</string>
+    <string name = "auth_completed_ok">Успешно завершено</string>
+    <string name = "auth_error">Ошибка авторизации</string>
+    <string name = "not_authenticated">Необходима аутентификация</string>
+    <string name = "please_wait">Пожалуйста подождите</string>
+    <string name = "your_comment">Ваш комментарий</string>
+    <string name = "unable_resolve_host">Unable to resolve host</string>
+    <string name = "check_inet">Проверьте подключение к сети Интернет</string>
+    <string name = "comment_editing">Комментарий</string>
+    <string name = "share">Поделиться</string>
+    <string name = "add_to_black_list">Добавить %s в черный список?</string>
+    <string name = "add_to_black_list_2">Добавить в черный список</string>
+    <string name = "del">Удалить</string>
+    <string name="prefTitle">Настройки</string>
+    <string name="rate_key">rate</string>
+    <string name="authenticate_key">auth</string>
+    <string name="msg_need_auth">Необходимо авторизоваться</string>
+
+
+</resources>

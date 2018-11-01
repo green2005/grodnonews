@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.green.grodnonews">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+
+    <application
+        android:name="com.green.grodnonews.App"
+        android:allowBackup="true"
+        android:icon="@drawable/grodnonews"
+        android:label="@string/app_name"
+        android:supportsRtl="false"
+        android:theme="@style/ActivityTheme_Primary_Base_Light"
+        >
+
+        <activity android:name="com.green.grodnonews.ui.MainActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.DetailActivity"
+            android:parentActivityName=".ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.MainActivity" />
+        </activity>
+
+        <activity android:name=".ui.ImageZoomActivity" />
+        <activity android:name=".ui.PreferencesActivity"/>
+    </application>
+
+</manifest>
