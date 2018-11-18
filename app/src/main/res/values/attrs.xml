@@ -8,6 +8,7 @@
         <attr name="backgroundCardColor" format="reference|color"/>
         <attr name="backgroundColor" format="reference|color"/>
         <attr name="toolBarColor" format="reference|color"/>
+        <attr name="colorAccentGrey" format="reference|color"/>
         <attr name="iconPlaceholder" format="integer"/>
     </declare-styleable>
 </resources>

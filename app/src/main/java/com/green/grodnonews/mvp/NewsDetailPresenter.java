@@ -19,7 +19,7 @@ import com.green.grodnonews.room.NewsDetailItem;
 import com.green.grodnonews.ui.PreferencesActivity;
 
 public class NewsDetailPresenter extends ViewModel implements NewsDetailContract.Presenter {
-    private NewsDetailRepository mRepository;
+    private NewsDetailContract.Repository mRepository;
     private NewsDetailContract.View mView;
 
 
@@ -29,7 +29,6 @@ public class NewsDetailPresenter extends ViewModel implements NewsDetailContract
         mRepository.addObserver(view.getUrl(), view.getViewLifecycleOwner(), view.getObserver());
         //   mRepository.requestData(this, view.getUrl(), view.getFeedType());
         mView = view;
-
     }
 
     @Override
@@ -51,20 +50,25 @@ public class NewsDetailPresenter extends ViewModel implements NewsDetailContract
     }
 
     @Override
-    public void onAddCommentClick(Context context, FragmentManager fm, NewsDetailItem detail) {
+    public void onAddCommentClick(Context context, FragmentManager fm, NewsDetailItem detail, String commentStartText) {
         AccountSettings settings = new AccountSettings(context);
         if (TextUtils.isEmpty(settings.getUserName())) {
             Intent i = new Intent(context, PreferencesActivity.class);
             context.startActivity(i);
             Toast.makeText(context, R.string.msg_need_auth, Toast.LENGTH_LONG).show();
         } else {
-            addComment(context, fm, detail);
+            addComment(context, fm, detail, commentStartText);
         }
 
     }
 
-    private void addComment(final Context context, FragmentManager fm, final NewsDetailItem detailItem) {
-        CommentEditDialog dlg = CommentEditDialog.getNewDialog("", new CommentEditDialog.OnDoneEditingListener() {
+    @Override
+    public void addUserToBlackList(String userName, String dataUrl, FeedTypeEnum typeEnum) {
+        mRepository.addUserToBlackList(userName, this, dataUrl, typeEnum);
+    }
+
+    private void addComment(final Context context, FragmentManager fm, final NewsDetailItem detailItem, String commentStartText) {
+        CommentEditDialog dlg = CommentEditDialog.getNewDialog(commentStartText, new CommentEditDialog.OnDoneEditingListener() {
             @Override
             public void onDoneEditing(String comment) {
                 if (!TextUtils.isEmpty(comment)) {
@@ -77,13 +81,13 @@ public class NewsDetailPresenter extends ViewModel implements NewsDetailContract
     }
 
     private void sendComment(final Context context, final String comment, NewsDetailItem detailItem) {
-      S13DataSource source = (S13DataSource)S13DataSource.getNetworkDataSource(context , FeedTypeEnum.S13);
-      source.addComment(comment, detailItem.akismet, detailItem.ak_js,  (detailItem.commentId) , new RequestListener() {
-          @Override
-          public void onRequestDone(S13Connector.QUERY_RESULT result, String errorMessage) {
-              mView.commentAdded();
-          }
-      });
+        S13DataSource source = (S13DataSource) S13DataSource.getNetworkDataSource(context, FeedTypeEnum.S13);
+        source.addComment(comment, detailItem.akismet, detailItem.ak_js, (detailItem.commentId), new RequestListener() {
+            @Override
+            public void onRequestDone(S13Connector.QUERY_RESULT result, String errorMessage) {
+                mView.commentAdded();
+            }
+        });
     }
 
 }

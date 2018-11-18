@@ -17,4 +17,9 @@
     <color name="color_toolbar_title_expanded">@android:color/transparent</color>
     <color name="color_toolbar_title_collapsed">@android:color/white</color>
 
+    <color name="primaryTeal">#009688</color>
+    <color name="primary_darkTeal">#00796B</color>
+    <color name="primary_lightTeal">#B2DFDB</color>
+
+
 </resources>

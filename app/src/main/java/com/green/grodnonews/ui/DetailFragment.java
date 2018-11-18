@@ -4,15 +4,19 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
@@ -29,6 +33,8 @@ import com.green.grodnonews.room.NewsFeedItem;
 import java.util.List;
 
 public class DetailFragment extends Fragment implements NewsDetailContract.View, Observer<List<NewsDetailItem>> {
+    private static final String REPLY_PREFIX = "<b>@ %s</b>:\n";
+
     private NewsDetailPresenter mPresenter;
     private NewsFeedItem mNewsFeedItem;
     private DetailAdapter mAdapter;
@@ -39,6 +45,10 @@ public class DetailFragment extends Fragment implements NewsDetailContract.View,
     private NewsDetailItem mDetail;
     private boolean mCommentAdded = false;
     private RecyclerView mRecyclerView;
+    private Snackbar mSnackBar = null;
+    private Boolean mHideUser = false;
+
+    private static final int SNACKBAR_TIMEOUT = 3000;
 
     public static Fragment getDetailFragment(Bundle params) {
         Fragment fragment = new DetailFragment();
@@ -62,31 +72,32 @@ public class DetailFragment extends Fragment implements NewsDetailContract.View,
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_detail, container, false);
-        mProgress = v.findViewById(R.id.progress);
-        mEdit = v.findViewById(R.id.btn_edit);
+        View view = inflater.inflate(R.layout.fragment_detail, container, false);
+        mProgress = view.findViewById(R.id.progress);
+        mEdit = view.findViewById(R.id.btn_edit);
         mPresenter.onRequestData(mNewsFeedItem.url, FeedTypeEnum.getTypeById(mNewsFeedItem.feedSourceId));
         mProgress.setVisibility(View.VISIBLE);
         mProgress.setActivated(true);
 
-        mSwipe = v.findViewById(R.id.swipe);
+        mSwipe = view.findViewById(R.id.swipe);
         mSwipe.setRefreshing(true);
         mSwipe.setActivated(true);
-        mRecyclerView = v.findViewById(R.id.recyclerview);
+        mRecyclerView = view.findViewById(R.id.recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mAdapter = new DetailAdapter(getActivity(), (AppCompatActivity) getActivity());
+        mAdapter.setOnUserMenuMoreClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopupMenu(v);
+            }
+        });
         mAdapter.setTitleImage(mNewsFeedItem.imgUrl);
         mRecyclerView.setAdapter(mAdapter);
 
         mSwipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if (!mIsLoading) {
-                    mPresenter.onRequestData(mNewsFeedItem.url, FeedTypeEnum.getTypeById(mNewsFeedItem.feedSourceId));
-                    //  mProgress.setVisibility(View.VISIBLE);
-                    //  mProgress.setActivated(true);
-                    mIsLoading = true;
-                }
+                refreshData();
             }
         });
         if (supportsEditing()) {
@@ -105,14 +116,85 @@ public class DetailFragment extends Fragment implements NewsDetailContract.View,
             mEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mPresenter.onAddCommentClick(DetailFragment.this.getActivity(), getFragmentManager(), mDetail);
+                    mPresenter.onAddCommentClick(DetailFragment.this.getActivity(), getFragmentManager(), mDetail, "");
                 }
             });
         } else {
             mEdit.setVisibility(View.GONE);
         }
-        return v;
+        return view;
     }
+
+
+    private void showPopupMenu(final View v) {
+        final NewsDetailItem newsDetailItem = mAdapter.getItemAtPos((Integer) v.getTag());
+        if (newsDetailItem == null) return;
+
+        PopupMenu popupMenu = new PopupMenu(getActivity(), v);
+        popupMenu.inflate(R.menu.menu_user_popup);
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                String author = newsDetailItem.authorName;
+                switch (item.getItemId()) {
+                    case (R.id.menu_answer): {
+                        String reply = String.format(REPLY_PREFIX, author);
+                        mPresenter.onAddCommentClick(DetailFragment.this.getActivity(), getFragmentManager(), mDetail, reply);
+                        break;
+                    }
+                    case (R.id.menu_add_to_blacklist): {
+                        hideUserComments(author);
+                        break;
+                    }
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
+    }
+
+    private void hideUserComments(final String userName) {
+        View v = getView();
+        mHideUser = true;
+        if (v == null) return;
+        mSnackBar = Snackbar.make(v, "Пользователь будет скрыт",
+                Snackbar.LENGTH_LONG).setAction("Отменить?", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if ((mSnackBar != null) && (mSnackBar.isShown())) {
+                    mSnackBar.dismiss();
+                    mHideUser = false;
+                }
+            }
+        });
+        final Handler h = new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(SNACKBAR_TIMEOUT);
+                    h.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (mHideUser) {
+                                mPresenter.addUserToBlackList(userName, mNewsFeedItem.url, FeedTypeEnum.getTypeById(mNewsFeedItem.feedSourceId));
+                            }
+                        }
+                    });
+                } catch (Exception e) {
+                }
+            }
+        }).start();
+        mSnackBar.show();
+    }
+
+    private void refreshData(){
+        if (!mIsLoading) {
+            mPresenter.onRequestData(mNewsFeedItem.url, FeedTypeEnum.getTypeById(mNewsFeedItem.feedSourceId));
+            mIsLoading = true;
+        }
+    }
+
 
     @Override
     public void onDestroy() {

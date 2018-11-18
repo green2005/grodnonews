@@ -32,11 +32,13 @@ public interface NewsDetailContract {
 
         void onDestroyView(@NonNull NewsDetailContract.View view);
 
-        void onRequestData(@NonNull  String url, @NonNull FeedTypeEnum feedType );
+        void onRequestData(@NonNull String url, @NonNull FeedTypeEnum feedType);
 
         void processError(String errorText);
 
-        void onAddCommentClick(Context context, FragmentManager fm, NewsDetailItem mDetail);
+        void onAddCommentClick(Context context, FragmentManager fm, NewsDetailItem mDetail, String commentStartText);
+
+        void addUserToBlackList(String userName, String dataUrl, FeedTypeEnum typeEnum);
     }
 
     interface Repository {
@@ -45,6 +47,8 @@ public interface NewsDetailContract {
         void removeObserver(String url, LifecycleOwner owner);
 
         void requestData(Presenter presenter, String url, FeedTypeEnum feedType);
+
+        void addUserToBlackList(String userName, Presenter presenter, String url, FeedTypeEnum feedType);
     }
 
 }

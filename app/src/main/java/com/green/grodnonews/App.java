@@ -20,7 +20,10 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        mDB = Room.databaseBuilder(this, NewsDB.class, DB_NAME).build();
+        mDB = Room.databaseBuilder(this, NewsDB.class, DB_NAME)
+                .fallbackToDestructiveMigration() //destroy any existing versions of db
+                .build();
+
         mFeedRepository = new NewsFeedRepository(this);
         sExecutor = new Executor();
         sImageLoader = new ImageLoader(this);

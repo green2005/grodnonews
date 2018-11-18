@@ -1,8 +1,6 @@
 package com.green.grodnonews.adapters;
 
 
-import android.app.Activity;
-import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -10,33 +8,33 @@ import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.green.grodnonews.API;
-import com.green.grodnonews.DetailTypeEnum;
-import com.green.grodnonews.mvp.ThemePresenter;
-import com.green.grodnonews.ui.ImageClickListener;
-import com.green.grodnonews.R;
-import com.green.grodnonews.ui.ResizableImageView;
-import com.green.grodnonews.loader.ImageLoader;
-import com.green.grodnonews.room.NewsDetailItem;
-
-
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeIntents;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.green.grodnonews.API;
+import com.green.grodnonews.DetailTypeEnum;
+import com.green.grodnonews.R;
+import com.green.grodnonews.loader.ImageLoader;
+import com.green.grodnonews.mvp.ThemePresenter;
+import com.green.grodnonews.room.NewsDetailItem;
+import com.green.grodnonews.ui.ImageClickListener;
+import com.green.grodnonews.ui.ResizableImageView;
 
 import java.util.HashMap;
 import java.util.List;
@@ -52,7 +50,8 @@ public class DetailAdapter extends RecyclerView.Adapter {
     private int mTitleFontSize;
     private int mContentFontSize;
     private String mTitleImage;
-    private FloatingActionButton mFab = null;
+    private PopupMenu mPopupMenu;
+    private View.OnClickListener mMenuMoreOnClickListener;
 
     private final Map<YouTubeThumbnailView, YouTubeThumbnailLoader> mThumbnailViewToLoaderMap = new HashMap<>();
 
@@ -94,6 +93,8 @@ public class DetailAdapter extends RecyclerView.Adapter {
     private class CommentHolder extends RecyclerView.ViewHolder {
         TextView tvComment;
         TextView tvAuthor;
+        ImageView imAuthor;
+        ImageView imMenuMore;
 
         CommentHolder(View itemView) {
             super(itemView);
@@ -147,20 +148,30 @@ public class DetailAdapter extends RecyclerView.Adapter {
             case COMMENT: {
                 View v = mInflater.inflate(R.layout.rv_newsdetail_item_comment, parent, false);
                 CommentHolder h = new CommentHolder(v);
-                h.tvComment = v.findViewById(R.id.tvComment);
-                h.tvAuthor = v.findViewById(R.id.tvAuthor);
+                h.tvComment = v.findViewById(R.id.tv_comment);
+                h.tvAuthor = v.findViewById(R.id.tv_userName);
+                h.imAuthor = v.findViewById(R.id.imv_userpic);
+                h.imMenuMore = v.findViewById(R.id.imv_more);
+
+                h.imMenuMore.setOnClickListener(mMenuMoreOnClickListener);
+                h.tvComment.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContentFontSize);
+                h.tvComment.setMovementMethod(LinkMovementMethod.getInstance());
+                h.tvAuthor.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContentFontSize);
                 return h;
             }
             case COMMENT_TITLE: {
                 View v = mInflater.inflate(R.layout.rv_newsdetail_item_comment_title, parent, false);
                 CommentTitleHolder h = new CommentTitleHolder(v);
                 h.tvTitle = v.findViewById(R.id.tvTitle);
+                h.tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTitleFontSize);
                 return h;
             }
             case SPLASH_TEXT: {
                 View v = mInflater.inflate(R.layout.rv_newsdetail_item_splash_text, parent, false);
                 SplashTextHolder h = new SplashTextHolder(v);
                 h.tvText = v.findViewById(R.id.tvText);
+                h.tvText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContentFontSize);
+                h.tvText.setMovementMethod(LinkMovementMethod.getInstance());
                 return h;
             }
 
@@ -168,6 +179,7 @@ public class DetailAdapter extends RecyclerView.Adapter {
                 View v = mInflater.inflate(R.layout.rv_newsdetail_item_title, parent, false);
                 TitleHolder h = new TitleHolder(v);
                 h.tvTitle = v.findViewById(R.id.tvTitle);
+                h.tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTitleFontSize);
                 return h;
             }
             case VIDEO: {
@@ -179,6 +191,10 @@ public class DetailAdapter extends RecyclerView.Adapter {
             }
         }
         return null;
+    }
+
+    public void setOnUserMenuMoreClickListener(View.OnClickListener listener) {
+        mMenuMoreOnClickListener = listener;
     }
 
     public void setTitleImage(String url) {
@@ -197,12 +213,12 @@ public class DetailAdapter extends RecyclerView.Adapter {
         switch (itemType) {
             case TITLE: {
                 ((TitleHolder) (holder)).tvTitle.setText(getStringFromHtml(mItems.get(position).content));
-                ((TitleHolder) (holder)).tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTitleFontSize);
+
                 break;
             }
             case SPLASH_TEXT: {
                 ((SplashTextHolder) (holder)).tvText.setText(getStringFromHtml(mItems.get(position).content));
-                ((SplashTextHolder) (holder)).tvText.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContentFontSize);
+
                 break;
             }
             case IMAGE: {
@@ -228,12 +244,14 @@ public class DetailAdapter extends RecyclerView.Adapter {
                 NewsDetailItem item = mItems.get(position);
                 ((CommentHolder) (holder)).tvComment.setText(getStringFromHtml(item.content));
                 ((CommentHolder) (holder)).tvAuthor.setText(item.authorName);
-                ((CommentHolder) (holder)).tvComment.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContentFontSize);
-                ((CommentHolder) (holder)).tvAuthor.setTextSize(TypedValue.COMPLEX_UNIT_PX, mContentFontSize);
+                String logoUrl = item.authorImage;
+                setImage(((CommentHolder) (holder)).imAuthor, logoUrl);
+                ((CommentHolder) (holder)).imMenuMore.setTag(position);
+
+
                 break;
             }
             case COMMENT_TITLE: {
-                ((CommentTitleHolder) (holder)).tvTitle.setTextSize(TypedValue.COMPLEX_UNIT_PX, mTitleFontSize);
             }
         }
     }
@@ -251,6 +269,12 @@ public class DetailAdapter extends RecyclerView.Adapter {
 
         thumbnail.setTag(url);
         thumbnail.initialize(API.YOUTUBE_KEY, mThumbnailListener);
+    }
+
+    private void setImage(ImageView imageView, String url) {
+        if (mImageLoader != null) {
+            mImageLoader.loadImage(imageView, url);
+        }
     }
 
     private void setImage(int width, int height, ResizableImageView imageView, String url) {
@@ -276,15 +300,15 @@ public class DetailAdapter extends RecyclerView.Adapter {
         }
     }
 
-    String getStringFromHtml(String html) {
+    private Spanned getStringFromHtml(String html) {
         if (TextUtils.isEmpty(html)) {
-            return "";
+            return null;
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString();
+            return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY);
         } else {
-            return Html.fromHtml(html).toString();
+            return Html.fromHtml(html);
         }
 
     }
@@ -292,6 +316,15 @@ public class DetailAdapter extends RecyclerView.Adapter {
     public void setItems(List<NewsDetailItem> items) {
         mItems = items;
         notifyDataSetChanged();
+    }
+
+    public NewsDetailItem getItemAtPos(int pos) {
+
+        if ((mItems == null) || (pos >= getItemCount())) {
+            return null;
+        } else {
+            return mItems.get(pos);
+        }
     }
 
 

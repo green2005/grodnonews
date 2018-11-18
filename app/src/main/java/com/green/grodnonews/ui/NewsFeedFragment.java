@@ -16,11 +16,10 @@ import android.view.ViewGroup;
 
 import com.green.grodnonews.ErrorHelper;
 import com.green.grodnonews.FeedTypeEnum;
-import com.green.grodnonews.mvp.NewsFeedContract;
-import com.green.grodnonews.mvp.NewsFeedPresenter;
 import com.green.grodnonews.R;
 import com.green.grodnonews.adapters.FeedAdapter;
-import com.green.grodnonews.mvp.ThemePresenter;
+import com.green.grodnonews.mvp.NewsFeedContract;
+import com.green.grodnonews.mvp.NewsFeedPresenter;
 import com.green.grodnonews.room.NewsFeedItem;
 
 import java.util.List;

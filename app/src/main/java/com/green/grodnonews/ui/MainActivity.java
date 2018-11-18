@@ -3,6 +3,7 @@ package com.green.grodnonews.ui;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -22,6 +23,8 @@ import com.green.grodnonews.R;
 import com.green.grodnonews.adapters.TabsAdapter;
 import com.green.grodnonews.mvp.ThemeContract;
 import com.green.grodnonews.mvp.ThemePresenter;
+
+import junit.runner.Version;
 
 public class MainActivity extends AppCompatActivity implements ThemeContract.View {
     Toolbar mToolbar;
@@ -92,7 +95,9 @@ public class MainActivity extends AppCompatActivity implements ThemeContract.Vie
         PopupWindow w = new PopupWindow(popupView,
                 LayoutParams.WRAP_CONTENT,
                 LayoutParams.WRAP_CONTENT);
-        w.setElevation(5.0f);
+        if (Build.VERSION.SDK_INT>= Build.VERSION_CODES.M) {
+            w.setElevation(5.0f);
+        }
         w.setFocusable(true);
         w.showAsDropDown(mToolbar, mToolbar.getWidth() - 10, mToolbar.getHeight() + 10);
 

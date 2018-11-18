@@ -8,11 +8,11 @@ import android.os.Handler;
 import com.green.grodnonews.App;
 import com.green.grodnonews.FeedTypeEnum;
 import com.green.grodnonews.blogio.AccountSettings;
-import com.green.grodnonews.network.BlogDataSource;
 import com.green.grodnonews.network.NetworkDataSource;
 import com.green.grodnonews.network.S13DataSource;
 import com.green.grodnonews.parser.DetailProcessor;
 import com.green.grodnonews.parser.FeedProcessor;
+import com.green.grodnonews.room.BlackListItem;
 import com.green.grodnonews.room.NewsDB;
 import com.green.grodnonews.room.NewsDetailItem;
 
@@ -77,5 +77,15 @@ public class NewsDetailRepository implements NewsDetailContract.Repository {
         }).start();
     }
 
+    @Override
+    public void addUserToBlackList(final String userName, NewsDetailContract.Presenter presenter, String url, FeedTypeEnum feedType) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                mDB.blackListDao().insertRecord(new BlackListItem(userName));
+            }
+        }).start();
+        requestData(presenter, url, feedType);
+    }
 
 }

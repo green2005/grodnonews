@@ -17,6 +17,7 @@ import android.view.View;
 
 import com.green.grodnonews.FeedTypeEnum;
 import com.green.grodnonews.R;
+import com.green.grodnonews.ThemeHelper;
 import com.green.grodnonews.loader.ImageLoader;
 import com.green.grodnonews.mvp.ThemePresenter;
 import com.green.grodnonews.room.NewsFeedItem;
@@ -24,6 +25,7 @@ import com.green.grodnonews.room.NewsFeedItem;
 public class DetailActivity extends AppCompatActivity {
     public static final String FEED_ITEM_KEY = "rv_feed_item";
     private NewsFeedItem mFeedItem;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,13 +42,12 @@ public class DetailActivity extends AppCompatActivity {
 
         CollapsingToolbarLayout la = findViewById(R.id.main_collapsing);
 
-        int color = getColor(R.color.color_toolbar_title_collapsed);
+        int color = ThemeHelper.getColor(this, R.color.color_toolbar_title_collapsed);
         la.setCollapsedTitleTextColor(color);
 
-        color = getColor(R.color.color_toolbar_title_expanded);
+        color = ThemeHelper.getColor(this, R.color.color_toolbar_title_expanded);
         la.setExpandedTitleColor(color);
 
-        // getSupportActionBar().setIcon(R.drawable.logo);
 
         if ((getIntent().getExtras() != null) && (getIntent().getExtras().containsKey(FEED_ITEM_KEY))) {
             mFeedItem = getIntent().getExtras().getParcelable(FEED_ITEM_KEY);
@@ -57,17 +58,13 @@ public class DetailActivity extends AppCompatActivity {
             ResizableImageView imageView = findViewById(R.id.image);
             if (TextUtils.isEmpty(mFeedItem.imgUrl)) {
                 imageView.setVisibility(View.GONE);
-//                if (e != null) {
-//                    getSupportActionBar().setTitle(e.getTitle());
-//                }
                 final AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams)
                         la.getLayoutParams();
                 params.setScrollFlags(0);
                 la.setLayoutParams(params);
 
                 toolbar.setVisibility(View.VISIBLE);
-                toolbar.setTitle("dd1");
-                la.setTitle("dd2");
+
                 AppBarLayout a = findViewById(R.id.main_appbar);
                 a.setExpanded(true);
 

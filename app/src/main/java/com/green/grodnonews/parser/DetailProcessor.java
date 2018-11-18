@@ -3,11 +3,9 @@ package com.green.grodnonews.parser;
 import android.os.Build;
 import android.text.Html;
 
-import com.green.grodnonews.DetailTypeEnum;
 import com.green.grodnonews.FeedTypeEnum;
 import com.green.grodnonews.room.NewsDetailItem;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public abstract class DetailProcessor {
@@ -39,7 +37,7 @@ public abstract class DetailProcessor {
         return processor;
     }
 
-      String getStringFromHtml(String html) {
+    String getStringFromHtml(String html) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             return Html.fromHtml(html, Html.FROM_HTML_MODE_LEGACY).toString();
         } else {

@@ -18,7 +18,7 @@ public interface NewsFeedDao {
     void clearNews(int feedSourceID);
 
 
-    @Query("select * from newsfeed where feedSourceId=:feedSourceID order by id DESC")
+    @Query("select * from newsfeed   where feedSourceId=:feedSourceID order by id DESC ")
     LiveData<List<NewsFeedItem>> getNewsFeedLiveData(int feedSourceID);
 
 }

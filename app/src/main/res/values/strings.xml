@@ -24,7 +24,13 @@
     <string name="prefTitle">Настройки</string>
     <string name="rate_key">rate</string>
     <string name="authenticate_key">auth</string>
+    <string name="blacklist_key">blacklist</string>
+
     <string name="msg_need_auth">Необходимо авторизоваться</string>
+    <string name="answer">Ответить</string>
+    <string name="add_to_blacklist">Скрыть пользователя</string>
+    <string name="black_list_empty">Список пуст</string>
+    <string name="delete">Удалить</string>
 
 
 </resources>

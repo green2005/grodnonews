@@ -6,10 +6,10 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId "com.green.grodnonews"
-        minSdkVersion 23
+        minSdkVersion 17
         targetSdkVersion 27
-        versionCode 3
-        versionName "0.1"
+        versionCode 4
+        versionName "0.101"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -27,7 +27,14 @@ android {
             debuggable true
         }
     }
-    buildToolsVersion '27.0.3'
+    buildToolsVersion '28.0.3'
+
+
+    lintOptions {
+
+        checkReleaseBuilds false
+
+    }
 }
 
 dependencies {

@@ -7,7 +7,8 @@
         <item name="primaryTextColor">#DE000000</item>
         <item name="secondaryTextColor">#8A000000</item>
         <item name="dividerColor">@color/colorAccent</item>
-        <item name="android:colorAccent">@color/color_accent_grey</item>
+        <item name="colorAccentGrey">#999999</item>
+
     </style>
 
     <style name="Activity_Base_Dark" parent="Theme.AppCompat.NoActionBar">
@@ -17,6 +18,7 @@
         <item name="primaryTextColor">#FFFFFFFF</item>
         <item name="secondaryTextColor">#B3FFFFFF</item>
         <item name="dividerColor">#1FFFFFFF</item>
-        <item name="android:colorAccent">@color/color_accent_grey</item>
+        <item name="colorAccentGrey">@color/color_accent_grey</item>
+
     </style>
 </resources>

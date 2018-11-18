@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 
 import com.green.grodnonews.R;
+import com.green.grodnonews.ThemeHelper;
 import com.green.grodnonews.loader.ImageLoader;
 import com.green.grodnonews.mvp.ThemePresenter;
 
@@ -107,7 +108,7 @@ public class ImageZoomActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image_zoom);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        int color = getColor(R.color.color_toolbar_title_collapsed);
+        int color = ThemeHelper.getColor(this, R.color.color_toolbar_title_collapsed);
         toolbar.setTitleTextColor(color);
         mImageView = findViewById(R.id.imageView);
         ImageLoader imageLoader = ImageLoader.get(this);

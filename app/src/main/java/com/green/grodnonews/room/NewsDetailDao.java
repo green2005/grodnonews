@@ -20,6 +20,12 @@ public interface NewsDetailDao {
     @Query("delete from newsDetail")
     void deleteAllRecords();
 
-    @Query("select * from newsDetail where articleUrl=:url")
+//    @Query("select d.* from newsDetail d " +
+//            " where d.articleUrl=:url ")
+//    LiveData<List<NewsDetailItem>> getNewsDetail(String url);
+
+    @Query("select d.* from newsDetail d " +
+            " left join blackLst bl on (ifnull(bl.userName,'') = ifnull(d.authorName,'')) " +
+            " where d.articleUrl=:url and (ifnull(bl.userName,'')='')")
     LiveData<List<NewsDetailItem>> getNewsDetail(String url);
 }

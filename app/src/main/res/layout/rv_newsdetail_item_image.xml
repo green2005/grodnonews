@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-
-    <com.green.grodnonews.ui.ResizableImageView
+<com.green.grodnonews.ui.ResizableImageView
         android:id="@+id/photo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

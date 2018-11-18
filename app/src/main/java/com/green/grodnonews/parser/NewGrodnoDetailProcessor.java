@@ -5,25 +5,20 @@ import android.text.TextUtils;
 import com.green.grodnonews.DetailTypeEnum;
 import com.green.grodnonews.room.NewsDetailItem;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class NewGrodnoDetailProcessor extends DetailProcessor {
-    private static final String STextStart = "entry-content entry clearfix\">";
-    private static final String STextEnd = "<div class=\"mistape_caption\">";
 
+    private static final String STextStart = "entry-content entry clearfix\">";
+    private static final String STextEnd = "<div class=\"vortex";
     private static final String SImgStart1 = "<img";
     private static final String SImgStart2 = "src=\"";
-
     private static final String SImgEnd = "\"";
-
     private static final String STitleStart = "<title>";
     private static final String STitleEnd = "<\\/title>";
-
     private static final String SScript = "<script(.*?)<\\/script>";
 
     @Override

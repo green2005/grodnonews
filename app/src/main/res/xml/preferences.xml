@@ -14,5 +14,11 @@
             android:key="@string/authenticate_key">
         </PreferenceScreen>
 
+        <PreferenceScreen
+            android:title="Черный список"
+            android:summary="Список заблокированных пользователей"
+            android:key="@string/blacklist_key">
+        </PreferenceScreen>
+
     </PreferenceCategory>
 </PreferenceScreen>

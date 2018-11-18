@@ -36,8 +36,8 @@ public class S13DetailProcessor extends DetailProcessor {
 
     private static final String CAN_CHANGE_KARMA_PREFIX = "ckratingKarma";
 
-    private static final String COMMENT_PREFIX = "</div></div></div>";
-    private static final String COMMENT_POSTFIX = "</span>";
+    private static final String COMMENT_PREFIX = "</span></div></div></div><p>";
+    private static final String COMMENT_POSTFIX = "</p></span><divclass";
 
     private static final String DEFAULT_IMAGE_HEIGHT = "270";
     private static final String DEFAULT_IMAGE_WIDTH = "411";
@@ -79,8 +79,6 @@ public class S13DetailProcessor extends DetailProcessor {
         Pattern pCommentText = Pattern.compile("</span></div></div></div>(.*?)</p></span><divclass");
         Pattern pCommentId = Pattern.compile(COMMENT_ID_PREFIX + ".*?" + COMMENT_ID_POSTFIX);
 
-        Pattern pCommentTex2t = Pattern.compile("dislike-counter.*?comment-toolbar");
-        Pattern pCommentText3 = Pattern.compile(COMMENT_PREFIX + ".*?" + COMMENT_POSTFIX);
         Pattern pThumbsDown = Pattern.compile("dislike-counter-comment.*?</span>");
         Pattern pThumbsUp = Pattern.compile("like-counter-comment.*?</span>");
         Pattern pThumb2 = Pattern.compile(THUMB_PREF + ".*?" + THUMB_POSTF);
@@ -230,23 +228,12 @@ public class S13DetailProcessor extends DetailProcessor {
             if (mCommentText.find()) {
                 String s = mCommentText.group();
 
-                String commentText = getStringFromHtml(s); //mCommentText.group().substring(COMMENT_PREFIX.length());
-                // commentText = commentText.substring(0, commentText.length() - COMMENT_POSTFIX.length());
-                // commentText = commentText.replace("<p>", "");
-                //  commentText = commentText.replace("</p>", "");
+                String commentText = s; //getStringFromHtml(s); //mCommentText.group().substring(COMMENT_PREFIX.length());
+                if (!TextUtils.isEmpty(commentText)) {
+                    commentText = commentText.substring(COMMENT_PREFIX.length());
+                    commentText = commentText.substring(0, commentText.length() - COMMENT_POSTFIX.length());
+                }
                 item.content = (commentText);
-
-                /*mCommentText = pCommentTex2t.matcher(s);
-                if (mCommentText.find()) {
-                    mCommentText = pCommentText3.matcher(mCommentText.group());
-                    if (mCommentText.find()) {
-                        String commentText = mCommentText.group().substring(COMMENT_PREFIX.length());
-                        commentText = commentText.substring(0, commentText.length() - COMMENT_POSTFIX.length());
-                        commentText = commentText.replace("<p>", "");
-                        commentText = commentText.replace("</p>", "");
-                        item.setText(commentText);
-                    }
-                }*/
             }
             Matcher mCommentId = pCommentId.matcher(comment);
             if (mCommentId.find()) {
