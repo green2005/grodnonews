@@ -15,7 +15,7 @@ public class BlogDataSource extends NetworkDataSource{
     private OkHttpClient mClient;
 
     public BlogDataSource() {
-        mClient = new OkHttpClient.Builder()
+        mClient = getUnsafeOkHttpClient() //new OkHttpClient.Builder()
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(30, TimeUnit.SECONDS)
@@ -35,7 +35,7 @@ public class BlogDataSource extends NetworkDataSource{
         Request request = new Request.Builder()
                 .url(url)
                 .build();
-        Response response = null;
+        Response response;
         try {
             response = mClient.newCall(request).execute();
         } catch (Exception e) {
